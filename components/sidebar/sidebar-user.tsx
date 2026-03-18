@@ -1,3 +1,5 @@
+"use client"
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   DropdownMenu,
@@ -14,13 +16,21 @@ import { authClient } from "@/lib/auth-client"
 import { PLANS } from "@/lib/stripe"
 import { formatBytes } from "@/lib/utils"
 import { CreditCard, LogOut, MoreVertical, Settings, Sparkles, User } from "lucide-react"
+import { useLocale, useTranslations } from "next-intl"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 
 export default function SidebarUser({ profile, isSelfHosted }: { profile: UserProfile; isSelfHosted: boolean }) {
+  const locale = useLocale()
+  const t = useTranslations("common")
   const signOut = async () => {
     await authClient.signOut({})
     redirect("/")
+  }
+
+  const toggleLocale = () => {
+    const newLocale = locale === "en" ? "zh" : "en"
+    redirect(`/${newLocale}`)
   }
 
   return (
@@ -77,6 +87,10 @@ export default function SidebarUser({ profile, isSelfHosted }: { profile: UserPr
               <Settings className="h-4 w-4" />
               Settings
             </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={toggleLocale} className="flex items-center gap-2 cursor-pointer">
+            <span className="text-lg">{locale === "en" ? "🇺🇸" : "🇨🇳"}</span>
+            <span>{locale === "en" ? "English" : "中文"}</span>
           </DropdownMenuItem>
           {!isSelfHosted && (
             <DropdownMenuItem asChild>

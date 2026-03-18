@@ -5,9 +5,11 @@ import { FormInput } from "@/components/forms/simple"
 import { Button } from "@/components/ui/button"
 import { authClient } from "@/lib/auth-client"
 import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 import { useState } from "react"
 
 export function LoginForm({ defaultEmail }: { defaultEmail?: string }) {
+  const t = useTranslations("auth")
   const [email, setEmail] = useState(defaultEmail || "")
   const [otp, setOtp] = useState("")
   const [isOtpSent, setIsOtpSent] = useState(false)
@@ -26,12 +28,12 @@ export function LoginForm({ defaultEmail }: { defaultEmail?: string }) {
         type: "sign-in",
       })
       if (result.error) {
-        setError(result.error.message || "Failed to send the code")
+        setError(result.error.message || t("failedToSend"))
         return
       }
       setIsOtpSent(true)
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to send the code")
+      setError(err instanceof Error ? err.message : t("failedToSend"))
     } finally {
       setIsLoading(false)
     }
@@ -48,13 +50,13 @@ export function LoginForm({ defaultEmail }: { defaultEmail?: string }) {
         otp,
       })
       if (result.error) {
-        setError("The code is invalid or expired")
+        setError(t("codeInvalid"))
         return
       }
 
       router.push("/dashboard")
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to verify the code")
+      setError(err instanceof Error ? err.message : t("failedToVerify"))
     } finally {
       setIsLoading(false)
     }
@@ -63,7 +65,7 @@ export function LoginForm({ defaultEmail }: { defaultEmail?: string }) {
   return (
     <form onSubmit={isOtpSent ? handleVerifyOtp : handleSendOtp} className="flex flex-col gap-4 w-full">
       <FormInput
-        title="Email"
+        title={t("email")}
         type="email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
@@ -73,7 +75,7 @@ export function LoginForm({ defaultEmail }: { defaultEmail?: string }) {
 
       {isOtpSent && (
         <FormInput
-          title="Check your email for the verification code"
+          title={t("checkEmail")}
           type="text"
           value={otp}
           onChange={(e) => setOtp(e.target.value)}
@@ -84,7 +86,7 @@ export function LoginForm({ defaultEmail }: { defaultEmail?: string }) {
       )}
 
       <Button type="submit" disabled={isLoading}>
-        {isLoading ? "Loading..." : isOtpSent ? "Verify Code" : "Enter"}
+        {isLoading ? t("common.loading") : isOtpSent ? t("verifyCode") : t("enter")}
       </Button>
 
       {error && <FormError className="text-center">{error}</FormError>}

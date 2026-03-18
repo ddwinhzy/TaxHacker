@@ -1,3 +1,5 @@
+import { NextIntlClientProvider } from "next-intl"
+import { getMessages } from "next-intl/server"
 import config from "@/lib/config"
 import type { Metadata, Viewport } from "next"
 import "./globals.css"
@@ -42,10 +44,20 @@ export const viewport: Viewport = {
   userScalable: false,
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  const messages = await getMessages()
+
   return (
-    <html lang="en">
-      <body className="min-h-screen bg-white antialiased">{children}</body>
+    <html suppressHydrationWarning>
+      <body className="min-h-screen bg-white antialiased">
+        <NextIntlClientProvider messages={messages}>
+          {children}
+        </NextIntlClientProvider>
+      </body>
     </html>
   )
 }

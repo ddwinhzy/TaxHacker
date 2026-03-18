@@ -8,6 +8,7 @@ import { FormSelectType } from "@/components/forms/select-type"
 import { Button } from "@/components/ui/button"
 import { Category, Currency } from "@/prisma/client"
 import { CircleCheckBig } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { useActionState } from "react"
 
 export default function GlobalSettingsForm({
@@ -19,21 +20,23 @@ export default function GlobalSettingsForm({
   currencies: Currency[]
   categories: Category[]
 }) {
+  const t = useTranslations("settings")
+  const tCommon = useTranslations("common")
   const [saveState, saveAction, pending] = useActionState(saveSettingsAction, null)
 
   return (
     <form action={saveAction} className="space-y-4">
       <FormSelectCurrency
-        title="Default Currency"
+        title={t("defaultCurrency")}
         name="default_currency"
         defaultValue={settings.default_currency}
         currencies={currencies}
       />
 
-      <FormSelectType title="Default Transaction Type" name="default_type" defaultValue={settings.default_type} />
+      <FormSelectType title={t("defaultTransactionType")} name="default_type" defaultValue={settings.default_type} />
 
       <FormSelectCategory
-        title="Default Transaction Category"
+        title={t("defaultTransactionCategory")}
         name="default_category"
         defaultValue={settings.default_category}
         categories={categories}
@@ -41,12 +44,12 @@ export default function GlobalSettingsForm({
 
       <div className="flex flex-row items-center gap-4">
         <Button type="submit" disabled={pending}>
-          {pending ? "Saving..." : "Save Settings"}
+          {pending ? tCommon("saving") : tCommon("save")}
         </Button>
         {saveState?.success && (
           <p className="text-green-500 flex flex-row items-center gap-2">
             <CircleCheckBig />
-            Saved!
+            {tCommon("saved")}
           </p>
         )}
       </div>

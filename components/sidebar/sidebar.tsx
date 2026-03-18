@@ -19,6 +19,7 @@ import {
 import { UserProfile } from "@/lib/auth"
 import config from "@/lib/config"
 import { ClockArrowUp, FileText, Gift, House, Import, LayoutDashboard, Settings, Upload } from "lucide-react"
+import { useTranslations } from "next-intl"
 import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
@@ -37,11 +38,11 @@ export function AppSidebar({
   unsortedFilesCount: number
   isSelfHosted: boolean
 }) {
+  const t = useTranslations("nav")
   const { open, setOpenMobile } = useSidebar()
   const pathname = usePathname()
   const { notification } = useNotification()
 
-  // Hide sidebar on mobile when clicking an item
   useEffect(() => {
     setOpenMobile(false)
   }, [pathname, setOpenMobile])
@@ -63,7 +64,7 @@ export function AppSidebar({
           <SidebarGroup>
             <UploadButton className="w-full mt-4 mb-2">
               <Upload className="h-4 w-4" />
-              {open ? <span>Upload</span> : ""}
+              {open ? <span>{t("upload")}</span> : ""}
             </UploadButton>
           </SidebarGroup>
           <SidebarGroup>
@@ -73,7 +74,7 @@ export function AppSidebar({
                   <SidebarMenuButton asChild>
                     <Link href="/dashboard">
                       <House />
-                      <span>Home</span>
+                      <span>{t("home")}</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItemWithHighlight>
@@ -82,7 +83,7 @@ export function AppSidebar({
                   <SidebarMenuButton asChild>
                     <Link href="/transactions">
                       <FileText />
-                      <span>Transactions</span>
+                      <span>{t("transactions")}</span>
                       {notification && notification.code === "sidebar.transactions" && notification.message && (
                         <Blinker />
                       )}
@@ -95,7 +96,7 @@ export function AppSidebar({
                   <SidebarMenuButton asChild>
                     <Link href="/unsorted">
                       <ClockArrowUp />
-                      <span>Unsorted</span>
+                      <span>{t("unsorted")}</span>
                       {unsortedFilesCount > 0 && (
                         <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs font-medium text-primary-foreground">
                           {unsortedFilesCount}
@@ -110,7 +111,7 @@ export function AppSidebar({
                   <SidebarMenuButton asChild>
                     <Link href="/apps">
                       <LayoutDashboard />
-                      <span>Apps</span>
+                      <span>{t("apps")}</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItemWithHighlight>
@@ -118,7 +119,7 @@ export function AppSidebar({
                   <SidebarMenuButton asChild>
                     <Link href="/settings">
                       <Settings />
-                      <span>Settings</span>
+                      <span>{t("settings")}</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItemWithHighlight>
@@ -135,7 +136,7 @@ export function AppSidebar({
                   <SidebarMenuButton asChild>
                     <Link href="/import/csv">
                       <Import />
-                      Import from CSV
+                      {t("importFromCsv")}
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -144,7 +145,7 @@ export function AppSidebar({
                     <SidebarMenuButton asChild>
                       <Link href="https://vas3k.com/donate/" target="_blank">
                         <Gift />
-                        Thank the author
+                        {t("thankAuthor")}
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>

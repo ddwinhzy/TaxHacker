@@ -1,12 +1,15 @@
 import { withSentryConfig } from "@sentry/nextjs"
+import createNextIntlPlugin from "next-intl/plugin"
 import type { NextConfig } from "next"
+
+const withNextIntl = createNextIntlPlugin()
 
 const nextConfig: NextConfig = {
   eslint: {
-    ignoreDuringBuilds: true, // TODO: make me linting again
+    ignoreDuringBuilds: true,
   },
   images: {
-    unoptimized: true, // FIXME: bug on prod, images always empty, investigate later
+    unoptimized: true,
   },
   experimental: {
     serverActions: {
@@ -18,7 +21,7 @@ const nextConfig: NextConfig = {
 const isSentryEnabled = process.env.NEXT_PUBLIC_SENTRY_DSN && process.env.SENTRY_ORG && process.env.SENTRY_PROJECT
 
 export default isSentryEnabled
-  ? withSentryConfig(nextConfig, {
+  ? withSentryConfig(withNextIntl(nextConfig), {
       silent: !process.env.CI,
       org: process.env.SENTRY_ORG,
       project: process.env.SENTRY_PROJECT,
@@ -26,4 +29,4 @@ export default isSentryEnabled
       widenClientFileUpload: true,
       tunnelRoute: "/monitoring",
     })
-  : nextConfig
+  : withNextIntl(nextConfig)
